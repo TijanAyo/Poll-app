@@ -4,6 +4,30 @@ from .models import Question, Choice
 from django.urls import reverse
 from django.views import generic
 
+# Generic View
+"""
+Something about Generic view is that they have pre-defined functions to do certain things
+that would have taken 7 - 8 lines of code, an example is the "ListView" and "DetailView" and there are more
+"""
+class index(generic.ListView):
+    # We are telling the view to use the template specified belows
+    template_name = 'index.html'
+    # This is the same as the context in the function view
+    context_object_name = 'question_list'
+
+    # An helper function that will get the latest questions and it must be "get_Queryset"
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Question.objects.order_by('-pub_date')[:5]
+
+class detail(generic.DetailView):
+    model = Question
+    template_name = 'detail.html'
+
+class result(generic.DetailView):
+    model = Question
+    template_name = 'result.html'
+
 """def index(request):
     question_list = Question.objects.order_by('pub_date')[:5]
 
@@ -15,6 +39,12 @@ from django.views import generic
 
     context = {'question': question}
     return render(request, 'detail.html', context)"""
+
+"""def results(request, pk):
+    question = get_object_or_404(Question, pk=pk)
+
+    context = {'question': question}
+    return render(request, 'result.html', context)"""
 
 def vote(request, pk):
     # Grab the object and if the object doesnt exist raise an Error
@@ -33,36 +63,3 @@ def vote(request, pk):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button
         return HttpResponseRedirect(reverse('result', args=(question.id,)))
-
-
-
-"""def results(request, pk):
-    question = get_object_or_404(Question, pk=pk)
-
-    context = {'question': question}
-    return render(request, 'result.html', context)"""
-
-
-# Generic View
-"""
-Something about Generic view is that they have pre-defined functions to do certain things
-that would have taken 7 - 8 lines of code, an example is the "ListView" and "DetailView" and there are more
-"""
-class index(generic.ListView):
-    # We are telling the view to use the template specified belows
-    template_name = 'index.html'
-    # This is the same as the context in the function view
-    context_object_name = 'question_list'
-
-    # An helper function that will get the latest questions and it must be get_Queryset
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
-
-class detail(generic.DetailView):
-    model = Question
-    template_name = 'detail.html'
-
-class result(generic.DetailView):
-    model = Question
-    template_name = 'result.html'
