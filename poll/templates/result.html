@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Poll Results {% endblock %}
+
+{% block body %}
+
+  <div class="container">
+    <h1 class="text-center mb-3">{{ question.question_text }}</h1>
+
+    {% if error_message %}
+        <p class="alert alert-danger">
+            <strong>{{ error_message }}</strong>
+        </p>
+    {% endif %}
+  </div>
+
+  <div class='container'>
+    <div class="card mb-3">
+      <ul>
+      {% for choice in question.choice_set.all %}
+      <div class="card-body">
+        <li>{{ choice.choices }} -- {{ choice.votes }} vote {{ choice.votes|pluralize }}</li>
+      </div>
+      {% endfor %}
+      </ul>
+    </div>
+    <a  class="btn btn-primary text-decoration-none "href="{% url 'detail' question.id %}">Vote again?</a>
+  </div>
+
+{%  endblock %}
